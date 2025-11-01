@@ -2,48 +2,56 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")]
-    public float speed = 5f;
+    [Header("Cài đặt di chuyển")]
+    public float moveSpeed = 5f;     // tốc độ di chuyển của tàu
 
-    [Header("Shooting")]
-    public GameObject laserPrefab;  // Prefab laser
-    public Transform firePoint;     // Fire point trên spaceship
-
-    private float xMin, xMax, yMin, yMax;
+    private Rigidbody2D rb;
+    private Vector2 moveInput;
 
     void Start()
     {
-        // Tính giới hạn theo camera orthographic
-        Camera cam = Camera.main;
-        float halfWidth = cam.orthographicSize * cam.aspect;
-        float halfHeight = cam.orthographicSize;
-
-        // Giới hạn x, y dựa trên camera
-        xMin = -halfWidth;
-        xMax = halfWidth;
-        yMin = -halfHeight;
-        yMax = halfHeight;
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        // --- Movement ---
-        float moveX = Input.GetAxis("Horizontal"); // Arrow keys / A,D
-        float moveY = Input.GetAxis("Vertical");   // Arrow keys / W,S
+        // Nhận đầu vào từ bàn phím (WASD hoặc phím mũi tên)
+        moveInput.x = Input.GetAxis("Horizontal");
+        moveInput.y = Input.GetAxis("Vertical");
+    }
 
-        Vector3 pos = transform.position + new Vector3(moveX, moveY, 0) * speed * Time.deltaTime;
+    void FixedUpdate()
+    {
+        // ✅ Di chuyển tàu vũ trụ
+        rb.linearVelocity = moveInput * moveSpeed;
 
-        // Clamp để giữ Player trong màn hình
-        pos.x = Mathf.Clamp(pos.x, xMin, xMax);
-        pos.y = Mathf.Clamp(pos.y, yMin, yMax);
-
+        // ✅ Giới hạn trong vùng hiển thị (để không bay ra ngoài màn hình)
+        Vector2 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, -8f, 8f);
+        pos.y = Mathf.Clamp(pos.y, -4.5f, 4.5f);
         transform.position = pos;
+    }
 
-        // --- Shooting ---
-        if (Input.GetKeyDown(KeyCode.Space))
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // ✅ Nếu va chạm với Star → cộng điểm
+        if (collision.gameObject.CompareTag("Star"))
         {
-            if (laserPrefab != null && firePoint != null)
-                Instantiate(laserPrefab, firePoint.position, firePoint.rotation);
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.AddScore(10);
+            }
+            Destroy(collision.gameObject);
+        }
+
+        // ✅ Nếu va chạm với Asteroid → trừ điểm
+        if (collision.gameObject.CompareTag("Asteroid"))
+        {
+            Debug.Log("🚨 Va chạm thiên thạch - trừ điểm!");
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.AddScore(-5);
+            }
         }
     }
 }
