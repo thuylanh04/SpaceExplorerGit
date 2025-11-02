@@ -20,11 +20,12 @@ public class Bullet : MonoBehaviour
     {
         if (collision.CompareTag("Asteroid"))
         {
-            // Khi trúng thiên thạch: xóa cả hai và cộng điểm
+            // ✅ Khi trúng thiên thạch: xóa cả hai và cộng điểm
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.AddScore(5);
+                GameManager.Instance.AddScore(5); // Gọi AddScore → tự kiểm tra EndGame bên trong
             }
+
             Destroy(collision.gameObject);
             Destroy(gameObject);
         }
