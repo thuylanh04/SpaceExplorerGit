@@ -29,14 +29,14 @@ public class GameManager : MonoBehaviour
 
     // ✅ Cộng hoặc trừ điểm
     public void AddScore(int amount)
-{
-    score += amount;
-    UpdateScoreUI();
+    {
+        score += amount;
+        UpdateScoreUI();
 
-    // Trì hoãn kiểm tra EndGame để đảm bảo các object bị Destroy() đã biến mất
-    CancelInvoke(nameof(CheckGameEnd));
-    Invoke(nameof(CheckGameEnd), 0.2f);
-}
+        // Trì hoãn kiểm tra EndGame để đảm bảo các object bị Destroy() đã biến mất
+        CancelInvoke(nameof(CheckGameEnd));
+        Invoke(nameof(CheckGameEnd), 0.2f);
+    }
 
 
     // ✅ Cập nhật UI hiển thị điểm
@@ -60,25 +60,25 @@ public class GameManager : MonoBehaviour
 
     // ✅ Kiểm tra nếu người chơi đã thu thập và phá hết vật thể
     private void CheckGameEnd()
-{
-    int starCount = GameObject.FindGameObjectsWithTag("Star").Length;
-    int asteroidCount = GameObject.FindGameObjectsWithTag("Asteroid").Length;
-
-    Debug.Log($"🪐 Kiểm tra EndGame: Star còn lại = {starCount}, Asteroid còn lại = {asteroidCount}");
-
-    // Log vị trí từng asteroid còn lại
-    foreach (var a in GameObject.FindGameObjectsWithTag("Asteroid"))
     {
-        Debug.Log($"➡️ Asteroid còn lại: {a.name} tại {a.transform.position}");
-    }
+        int starCount = GameObject.FindGameObjectsWithTag("Star").Length;
+        int asteroidCount = GameObject.FindGameObjectsWithTag("Asteroid").Length;
 
-    if (starCount == 0 && asteroidCount == 0)
-    {
-        Debug.Log("🎯 Hoàn thành trò chơi!");
-        PlayerPrefs.SetInt("FinalScore", score);
-        SceneManager.LoadScene("EndGame");
+        Debug.Log($"🪐 Kiểm tra EndGame: Star còn lại = {starCount}, Asteroid còn lại = {asteroidCount}");
+
+        // Log vị trí từng asteroid còn lại
+        foreach (var a in GameObject.FindGameObjectsWithTag("Asteroid"))
+        {
+            Debug.Log($"➡️ Asteroid còn lại: {a.name} tại {a.transform.position}");
+        }
+
+        if (starCount == 0 && asteroidCount == 0)
+        {
+            Debug.Log("🎯 Hoàn thành trò chơi!");
+            PlayerPrefs.SetInt("FinalScore", score);
+            SceneManager.LoadScene("EndGame");
+        }
     }
-}
 
 
     // ✅ Gọi khi va chạm thiên thạch hoặc thắng game
