@@ -11,13 +11,13 @@ public class StarSpawner : MonoBehaviour
     {
         for (int i = 0; i < starCount; i++)
         {
-            // ✅ Tạo vị trí ngẫu nhiên trong vùng giới hạn màn hình
+            // Tạo vị trí ngẫu nhiên trong vùng giới hạn màn hình
             Vector2 pos = new Vector2(
                 Random.Range(-xRange, xRange),
                 Random.Range(-yRange, yRange)
             );
 
-            // ✅ Sinh ra starPrefab ở vị trí đó
+            // Sinh ra starPrefab ở vị trí đó
             Instantiate(starPrefab, pos, Quaternion.identity);
         }
     }

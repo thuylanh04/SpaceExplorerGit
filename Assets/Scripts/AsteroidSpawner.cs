@@ -13,8 +13,8 @@ public class AsteroidSpawner : MonoBehaviour
     void Start()
     {
         var cam = Camera.main;
-        yLimit = cam.orthographicSize;
-        xLimit = yLimit * cam.aspect;
+        yLimit = cam.orthographicSize;  // Lấy chiều cao màn hình (orthographic)
+        xLimit = yLimit * cam.aspect;   // Tính chiều rộng màn hình
 
         for (int i = 0; i < asteroidCount; i++)
         {
@@ -35,24 +35,31 @@ public class AsteroidSpawner : MonoBehaviour
 
     void Update()
     {
+        // Kiểm tra từng thiên thạch
         foreach (var rb in asteroids)
         {
-            if (rb == null) continue;
-            var p = rb.position;
+            if (rb == null) continue; // Bỏ qua nếu đã bị hủy
+            var p = rb.position; // Lấy vị trí hiện tại
 
+            // Nếu chạm biên ngang
             if (Mathf.Abs(p.x) > xLimit)
             {
+                // Đổi hướng vận tốc ngang
                 rb.linearVelocity = new(-rb.linearVelocity.x, rb.linearVelocity.y);
+                // Đẩy vào trong một chút để tránh kẹt biên
                 p.x = Mathf.Sign(p.x) * (xLimit - 0.1f);
             }
 
+            // Nếu chạm biên dọc
             if (Mathf.Abs(p.y) > yLimit)
             {
+                // Đổi hướng vận tốc dọc
                 rb.linearVelocity = new(rb.linearVelocity.x, -rb.linearVelocity.y);
+                // Đẩy vào trong một chút
                 p.y = Mathf.Sign(p.y) * (yLimit - 0.1f);
             }
 
-            rb.position = p;
+            rb.position = p; // Cập nhật vị trí mới
         }
     }
 }

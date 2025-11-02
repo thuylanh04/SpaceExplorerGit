@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("🚀 Cài đặt di chuyển")]
     public float moveSpeed = 5f;
-
-    [Header("🔫 Cài đặt bắn")]
-    public GameObject bulletPrefab;
+    public GameObject bulletPrefab; // Prefab viên đạn sẽ được tạo ra
     public Transform firePoint;
     public float fireRate = 0.25f;
     private float nextFireTime = 0f;
+    // nextFireTime = 0f: Bắn được ngay từ đầu game
+    // nextFireTime = 2f: Phải đợi 2 giây từ lúc bắt đầu game mới bắn được
+    // Không khai báo giá trị: Tự động = 0f, vẫn bắn được ngay từ đầu
 
     private Rigidbody2D rb;
-    private Vector2 moveInput;
+    private Vector2 moveInput;  // Vector lưu hướng di chuyển
 
     void Start()
     {
@@ -21,11 +21,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Di chuyển
         moveInput.x = Input.GetAxis("Horizontal");
         moveInput.y = Input.GetAxis("Vertical");
 
-        // Bắn laser
         if (Input.GetKey(KeyCode.Space) && Time.time >= nextFireTime)
         {
             Shoot();
@@ -35,7 +33,6 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Di chuyển tàu
         rb.linearVelocity = moveInput * moveSpeed;
 
         // Giữ hướng cố định (luôn hướng lên)
@@ -43,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
         // Giới hạn tàu trong vùng màn hình
         Vector2 pos = transform.position;
-        pos.x = Mathf.Clamp(pos.x, -8f, 8f);
+        pos.x = Mathf.Clamp(pos.x, -9f, 9f);
         pos.y = Mathf.Clamp(pos.y, -4.5f, 4.5f);
         transform.position = pos;
     }
@@ -56,23 +53,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)  // Hàm xử lý va chạm
     {
-        // ✅ Nếu va chạm với Star → cộng điểm
         if (collision.gameObject.CompareTag("Star"))
         {
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.AddScore(10);
+                GameManager.Instance.AddScore(5);
             }
             Destroy(collision.gameObject);
         }
 
-        // 🚨 Nếu va chạm với Asteroid → Game Over
         if (collision.gameObject.CompareTag("Asteroid"))
         {
-            Debug.Log("🚨 Va chạm thiên thạch - GAME OVER!");
-
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.GameOver();

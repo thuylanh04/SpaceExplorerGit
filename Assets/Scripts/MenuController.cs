@@ -13,8 +13,6 @@ public class MenuController : MonoBehaviour
     public void ShowInstructions()
     {
         instructionsPanel.SetActive(true);
-        Debug.Log("ShowInstructions() called!");
-
     }
 
     public void HideInstructions()

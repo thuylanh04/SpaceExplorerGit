@@ -16,14 +16,13 @@ public class Bullet : MonoBehaviour
         transform.Translate(Vector2.up * speed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)     //xử lý chạm vào đối tuợng khác
     {
         if (collision.CompareTag("Asteroid"))
         {
-            // ✅ Khi trúng thiên thạch: xóa cả hai và cộng điểm
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.AddScore(5); // Gọi AddScore → tự kiểm tra EndGame bên trong
+                GameManager.Instance.AddScore(10);
             }
 
             Destroy(collision.gameObject);
