@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Cộng hoặc trừ điểm
-    public void AddScore(int amount)
+    public void AddScore(int amount)                                     
     {
         score += amount;
         UpdateScoreUI();
